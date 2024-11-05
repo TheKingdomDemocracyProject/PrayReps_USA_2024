@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>People and Places We Will Pray For</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+    <div class="queuecontent">
+        <h1>People and Places We Will Pray For</h1>
+        <div class="links">
+            <a href="/">Back to Main</a>
+            <a href="/prayed">View Prayed Constituencies</a>
+			<a href="/statistics">View Statistics</a>
+        </div>
+        <div class="queue-list">
+                {% for item in queue %}
+                <div class="queue-item">{{ item.person_name }} - {{ item.post_label }}</div>
+                {% endfor %}
+        </div>
+        <div class="links">
+            <a href="/">Back to Main</a>
+            <a href="/prayed">View Prayed Constituencies</a>
+			<a href="/statistics">View Statistics</a>
+        </div>
+    </div>
+    <script>
+        // You can add any additional JavaScript here if needed
+    </script>
+</body>
+</html>

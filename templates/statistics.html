@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Statistics</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chartjs-adapter-date-fns@3.0.0/dist/chartjs-adapter-date-fns.bundle.min.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const partyInfo = {{ party_info | tojson }};
+            const partyColors = {};
+            for (const fullName in partyInfo) {
+                if (partyInfo.hasOwnProperty(fullName)) {
+                    partyColors[partyInfo[fullName].short_name] = partyInfo[fullName].color;
+                }
+            }
+
+            async function fetchStatistics() {
+                const response = await fetch('/statistics/data');
+                const data = await response.json();
+                const sortedKeys = Object.keys(data).sort((a, b) => data[b] - data[a]);
+                const sortedData = sortedKeys.map(key => data[key]);
+
+                const ctx = document.getElementById('partyChart').getContext('2d');
+                new Chart(ctx, {
+                    type: 'bar',
+                    data: {
+                        labels: sortedKeys,
+                        datasets: [{
+                            label: 'People Prayed For',
+                            data: sortedData,
+                            backgroundColor: sortedKeys.map(party => partyColors[party] || partyColors['Other']),
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        scales: {
+                            y: {
+                                beginAtZero: true
+                            }
+                        },
+                        plugins: {
+                            legend: {
+                                display: false // Hide legend
+                            }
+                        }
+                    }
+                });
+            }
+
+            async function fetchTimeData() {
+                const response = await fetch('/statistics/timedata');
+                const data = await response.json();
+                const ctx = document.getElementById('timeChart').getContext('2d');
+
+                const timeData = data.values.map((val, index) => ({
+                    x: new Date(data.timestamps[index]),
+                    y: index + 1,
+                    place: val.place,
+                    person: val.person,
+                    party: partyInfo[val.party]?.short_name || 'Other' // Convert full party name to short name
+                }));
+
+                new Chart(ctx, {
+                    type: 'line',
+                    data: {
+                        datasets: [{
+                            label: 'Prayer Times',
+                            data: timeData,
+                            borderColor: '#4e73df',
+                            backgroundColor: 'rgba(78, 115, 223, 0.05)',
+                            pointBackgroundColor: timeData.map(point => partyColors[point.party] || partyColors['Other']),
+                            pointBorderColor: timeData.map(point => partyColors[point.party] || partyColors['Other']),
+                            pointHoverBackgroundColor: timeData.map(point => partyColors[point.party] || partyColors['Other']),
+                            pointHoverBorderColor: timeData.map(point => partyColors[point.party] || partyColors['Other']),
+                            fill: true,
+                            tension: 0.4
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        scales: {
+                            x: {
+                                type: 'time',
+                                time: {
+                                    unit: 'minute',
+                                    tooltipFormat: 'PP HH:mm',
+                                    displayFormats: {
+                                        minute: 'HH:mm',
+                                        hour: 'HH:mm'
+                                    }
+                                }
+                            },
+                            y: {
+                                beginAtZero: true
+                            }
+                        },
+                        plugins: {
+                            tooltip: {
+                                callbacks: {
+                                    label: function(tooltipItem) {
+                                        return `${tooltipItem.raw.person} - ${tooltipItem.raw.place}`;
+                                    }
+                                }
+                            },
+                            legend: {
+                                display: false // Hide legend
+                            }
+                        }
+                    }
+                });
+            }
+
+            fetchStatistics();
+            fetchTimeData();
+        });
+    </script>
+</head>
+<body>
+    <div class="statscontent">
+        <div class="links">
+            <a href="/">Back to Main</a>
+            <a href="/queue">View Queue</a>
+			 <a href="/prayed">View Prayed Constituencies</a>
+        </div>
+        <div class="statistics">
+            <canvas id="timeChart"></canvas>
+        </div>
+        <div class="party-counts">
+            {% for party, count in sorted_party_counts %}
+            <div class="party-block {{ party | lower | replace(' ', '-') | replace('&', 'and') }}">
+                {{ party }}: {{ count }}
+            </div>
+            {% endfor %}
+        </div>
+        <div class="statistics">
+            <canvas id="partyChart"></canvas>
+        </div>
+    </div>
+</body>
+</html>

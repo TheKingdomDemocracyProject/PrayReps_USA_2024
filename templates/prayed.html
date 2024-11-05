@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>People and Places We've Prayed For</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+    <div class="prayedcontent">
+        <h1>People and Places We've Prayed For</h1>
+        <div class="links">
+            <a href="/">Back to Main</a>
+            <a href="/queue">View Queue</a>
+            <a href="#" id="toggleAffiliationButton" onclick="togglePartyAffiliation()">Show Party Affiliation</a>
+			<a href="/statistics">View Statistics</a>
+        </div>
+        <div class="prayed-list">
+            {% for item in prayed_for %}
+            <div class="prayed-item">
+                <span>
+                    <span class="highlight {{ item.party_class }}" data-party-color="{{ item.party_color }}" title="{{ item.party_name }}">{{ item.person_name }}</span>
+                    and
+                    {{ item.post_label }}
+                    were prayed for {{ item.formatted_timestamp }}
+                </span>
+                <button onclick="returnToQueue('{{ item.person_name }}', '{{ item.post_label }}')">Return to Queue</button>
+            </div>
+            {% endfor %}
+        </div>
+        <div class="links">
+            <a href="/">Back to Main</a>
+            <a href="/queue">View Queue</a>
+            <a href="#" id="toggleAffiliationButton" onclick="togglePartyAffiliation()">Show Party Affiliation</a>
+			<a href="/statistics">View Statistics</a>
+        </div>
+    </div>
+    <script>
+        async function returnToQueue(personName, postLabel) {
+            try {
+                const formData = new FormData();
+                formData.append('person_name', personName);
+                formData.append('post_label', postLabel);
+
+                const response = await fetch('/put_back', {
+                    method: 'POST',
+                    body: formData
+                });
+
+                if (response.ok) {
+                    window.location.reload();
+                } else {
+                    alert('Failed to return to queue.');
+                }
+            } catch (error) {
+                console.error('Error returning to queue:', error);
+            }
+        }
+
+        function togglePartyAffiliation() {
+            const highlights = document.querySelectorAll('.highlight');
+            highlights.forEach(span => {
+                if (span.style.backgroundColor === '' || span.style.backgroundColor === 'transparent') {
+                    span.style.backgroundColor = span.getAttribute('data-party-color');
+                } else {
+                    span.style.backgroundColor = 'transparent';
+                }
+            });
+        }
+
+        // Initial setting to hide party affiliation
+        window.onload = function() {
+            const highlights = document.querySelectorAll('.highlight');
+            highlights.forEach(span => {
+                span.style.backgroundColor = 'transparent';
+            });
+        }
+    </script>
+</body>
+</html>

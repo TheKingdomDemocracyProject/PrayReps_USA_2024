@@ -1,0 +1,268 @@
+body {
+    font-family: Arial, sans-serif;
+    text-align: center;
+    background-color: #f0f0f0;
+}
+
+.content {
+    margin: 20px auto;
+    padding: 20px;
+    background-color: white;
+    border-radius: 8px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    width: 80%;
+    max-width: 1200px;
+}
+
+.sentence-box {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    margin: 40px 0;
+    font-size: 2em;
+    font-weight: normal;
+}
+
+.controls {
+    margin: 20px 0;
+    display: flex;
+    justify-content: center; /* Center horizontally */
+}
+
+.controls button {
+    font-size: 1.2em;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 5px;
+    background-color: #28a745;
+    color: white;
+    cursor: pointer;
+}
+
+.statistics {
+    margin: 20px auto;
+    text-align: center;
+    display: block;
+}
+
+.statistics canvas {
+    max-height: 400px; /* Adjust the height as needed */
+    width: 100%;
+}
+
+.links {
+    margin: 20px 0;
+    font-size: 1em;
+}
+
+.links a {
+    margin: 0 10px;
+    text-decoration: none;
+    color: #007bff;
+}
+
+.links a:hover {
+    text-decoration: underline;
+}
+
+.prayed-list, .queue-list {
+    margin: 20px auto;
+    padding: 20px;
+    background-color: white;
+    border-radius: 8px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    width: 80%;
+    max-width: 1200px;
+}
+
+.prayed-item, .queue-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    text-align: left;
+    padding: 10px 0;
+    border-bottom: 1px solid #ddd;
+    font-size: 0.9em;
+}
+
+.prayed-item:last-child {
+    border-bottom: none;
+}
+
+.prayed-item span.highlight, span.highlight-neutral {
+    padding: 0px;
+    border-radius: 0px;
+    margin: 0px;
+}
+
+.prayed-item button {
+    font-size: 0.8em;
+    padding: 5px 10px;
+    border: none;
+    border-radius: 5px;
+    background-color: #6c757d;
+    color: white;
+    cursor: pointer;
+}
+
+.links a#toggleAffiliationButton {
+    margin: 0 10px;
+    text-decoration: none;
+    color: #007bff;
+    cursor: pointer;
+}
+
+.links a#toggleAffiliationButton:hover {
+    text-decoration: underline;
+}
+
+.party-counts {
+    display: flex;
+    justify-content: center;
+    margin: 20px 0;
+}
+
+.party-block {
+    padding: 10px;
+    margin: 0 5px;
+    color: white;
+    font-weight: bold;
+    border-radius: 5px;
+}
+
+.republican { background-color: #E81B23; }
+.democrat { background-color: #0015BC; }
+.conservative-party { background-color: #0087DC; }
+.labour{ background-color: #E4003B; }
+.liberal-democrats { background-color: #FAA61A; }
+.green-party { background-color: #528D6B; }
+.reform { background-color: #12B6CF; }
+.plaid-cymru { background-color: #005B54; }
+.snp { background-color: #FDF38E; }
+.sinn-fein { background-color: #326760; }
+.sinn-féin {background-color: #326760; }
+.dup { background-color: #D46A4C; }
+.uup { background-color: #48A5EE; }
+.sdlp { background-color: #2AA82C; }
+.alliance-party { background-color: #FFD700; }
+.other { background-color: #CCCCCC; }
+
+/* Layout */
+.columns {
+    display: flex;
+    justify-content: space-between;
+    margin: 20px 0;
+}
+
+.column {
+    flex: 1;
+    padding: 10px;
+}
+
+/* General Styles */
+.content {
+    display: flex;
+    margin: 20px auto;
+    padding: 20px;
+    background-color: white;
+    border-radius: 8px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    width: 80%;
+    max-width: 1200px;
+}
+
+.prayedcontent, .statscontent, .queuecontent {
+    margin: 20px auto;
+    padding: 20px;
+    background-color: white;
+    border-radius: 8px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    width: 80%;
+    max-width: 1200px;
+}
+
+.sentence-box {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    margin: 40px 0;
+    font-size: 3em;
+}
+
+.profile {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+
+.profile-image-container {
+    margin-bottom: 20px;
+    display:none;
+}
+
+.profile-image-container img {
+    max-height: 4em; /* This ensures the image does not exceed 3 lines of text */
+    border-radius: 50%;
+}
+
+.left-content {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    padding-right: 20px;
+}
+
+.right-content {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.queue-info {
+    display: flex;
+    justify-content: space-around;
+    margin: 20px 0;
+    font-size: 1em;
+}
+
+.tooltip {
+    position: relative;
+    display: inline-block;
+    cursor: pointer;
+}
+
+.tooltip .tooltiptext {
+    visibility: hidden;
+    width: 140px;
+    background-color: #555;
+    color: #fff;
+    text-align: center;
+    border-radius: 6px;
+    padding: 5px 0;
+    position: absolute;
+    z-index: 1;
+    bottom: 125%;
+    left: 50%;
+    margin-left: -75px;
+    opacity: 0;
+    transition: opacity 0.3s;
+}
+
+.tooltip:hover .tooltiptext {
+    visibility: visible;
+    opacity: 1;
+}
+
+.highlight {
+    padding: 3px 8px;
+    border-radius: 5px;
+}
+.hex-map {
+    width: 500px;  /* Set the desired width */
+    height: auto;  /* Maintain aspect ratio */
+}

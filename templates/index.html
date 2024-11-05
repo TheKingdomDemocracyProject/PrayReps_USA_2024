@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Praying in the new Parliament</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+    <div class="queue-info">
+        <div>Constituencies left to pray for: <span id="remaining">{{ remaining }}</span></div>
+        <div>Constituencies waiting for prayer: <span id="queue_size">{{ queue|length }}</span></div>
+    </div>
+    <div class="content">
+        <div class="left-content">
+            <div id="current-constituency" class="sentence-box">
+                Waiting for results. Stay tuned!
+            </div>
+            <div class="controls">
+                <button id="next-button" onclick="nextConstituency()" style="display: none;">Amen 🙏</button>
+            </div>
+        </div>
+        <div class="right-content">
+            <img id="hex-map" src="{{ url_for('static', filename='hex_map.png') }}" alt="Hex Map" class="hex-map">
+        </div>
+    </div>
+    <ul id="queue_list"></ul>
+    <div class="links">
+        <a href="/prayed">View Prayed Constituencies</a>
+        <a href="/queue">View Queue</a>
+        <a href="/statistics">View Statistics</a>
+    </div>
+    <script>
+        let processedCount = {{ 488 - remaining }};
+
+        function updateQueueInfo() {
+            console.log('Fetching queue data...');
+            fetch('/queue/json')
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error('Network response was not ok ' + response.statusText);
+                    }
+                    return response.json();
+                })
+                .then(data => {
+                    if (data && Array.isArray(data)) {
+                        console.log('Queue data:', data);
+                        document.getElementById('queue_size').innerText = data.length;
+                        if (data.length > 0) {
+                            const current = data[0];
+                            document.getElementById('current-constituency').innerHTML = `
+                                <div class="profile">
+                                    <div class="profile-image-container">
+                                        <img id="profileImage" src="${current.thumbnail}" alt="Profile image of ${current.person_name}">
+                                    </div>
+                                    <div class="profile-text">
+                                        <span id="personName">${current.person_name}</span>
+                                        is elected to serve
+                                        <span id="constituency">${current.place}</span>
+                                    </div>
+                                </div>
+                            `;
+                            document.getElementById('next-button').style.display = 'block';
+                        } else {
+                            document.getElementById('current-constituency').innerText = 'Waiting for results. Stay tuned!';
+                            document.getElementById('next-button').style.display = 'none';
+                        }
+                        reloadHexMap();
+                    } else {
+                        console.error('Unexpected data format:', data);
+                    }
+                })
+                .catch(error => {
+                    console.error('There has been a problem with your fetch operation:', error);
+                });
+        }
+
+        function reloadHexMap() {
+            const hexMap = document.getElementById('hex-map');
+            const newSrc = hexMap.src.split('?')[0] + '?' + new Date().getTime();  // Force reload by adding a timestamp
+            const newImage = new Image();
+            newImage.onload = function () {
+                hexMap.src = newSrc;
+            }
+            newImage.src = newSrc;
+        }
+
+        function nextConstituency() {
+            fetch('/process_item', { method: 'POST' })
+                .then(() => {
+                    processedCount++;
+                    document.getElementById('remaining').innerText = 488 - processedCount;
+                    updateQueueInfo();
+                })
+                .catch(error => {
+                    console.error('Error processing item:', error);
+                });
+        }
+
+        function purgeQueue() {
+            fetch('/purge', { method: 'POST' })
+                .then(() => {
+                    updateQueueInfo();
+                    processedCount = 0;
+                    document.getElementById('remaining').innerText = 488;
+                })
+                .catch(error => {
+                    console.error('Error purging queue:', error);
+                });
+        }
+
+        setInterval(updateQueueInfo, 10000);  // Update every 10 seconds
+        updateQueueInfo();  // Initial call to populate the data immediately
+    </script>
+</body>
+</html>
