@@ -11,5 +11,7 @@ This implementation retrieves data from a Google Docs CSV and uses JSON logging 
 
 If you want to purge the queue and start again use the route /purge and then /refresh.
 
+If you just want a simple CSV of the elected representatives then [this is the dataset behind the app](https://docs.google.com/spreadsheets/d/e/2PACX-1vRipmW1ZyjBW0Rea2pnK_4v6ZqPqhFX9nI3HnOtpDt2XE6V13FNnXrPTCES_HgQYbzJD4aPvd27No2h/pub?gid=0&single=true&output=csv).
+
 ## Contributing
 Feel free to contribute by submitting pull requests or opening issues. If you're interested in the vision behind PrayReps then you might want to look at [the Kingdom Democracy Project's website](https://kingdomdemocracy.global/).
