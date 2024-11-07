@@ -53,7 +53,7 @@ def plot_hex_map_with_hearts(hex_map, post_label_mapping, prayed_for, queue, hea
             if not location_geom.empty:
                 centroid = location_geom.geometry.centroid.iloc[0]
                 print(f"Centroid for {location_code}: ({centroid.x}, {centroid.y})")
-                imagebox = OffsetImage(heart_img, zoom=0.8)  # Adjust the zoom level for heart size
+                imagebox = OffsetImage(heart_img, zoom=0.9)  # Adjust the zoom level for heart size
                 ab = AnnotationBbox(imagebox, (centroid.x, centroid.y), frameon=False)
                 ax.add_artist(ab)
                 print(f"Heart plotted for location {location_code}")

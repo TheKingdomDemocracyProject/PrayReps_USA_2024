@@ -7,8 +7,8 @@
 </head>
 <body>
     <div class="queue-info">
-        <div>Constituencies left to pray for: <span id="remaining">{{ remaining }}</span></div>
-        <div>Constituencies waiting for prayer: <span id="queue_size">{{ queue|length }}</span></div>
+        <div>Representatives left to pray for: <span id="remaining">{{ remaining }}</span></div>
+        <div>Representatives waiting for prayer: <span id="queue_size">{{ queue|length }}</span></div>
     </div>
     <div class="content">
         <div class="left-content">
@@ -30,7 +30,7 @@
         <a href="/statistics">View Statistics</a>
     </div>
     <script>
-        let processedCount = {{ 488 - remaining }};
+        let processedCount = {{ 491 - remaining }};
 
         function updateQueueInfo() {
             console.log('Fetching queue data...');
@@ -88,7 +88,7 @@
             fetch('/process_item', { method: 'POST' })
                 .then(() => {
                     processedCount++;
-                    document.getElementById('remaining').innerText = 488 - processedCount;
+                    document.getElementById('remaining').innerText = 491 - processedCount;
                     updateQueueInfo();
                 })
                 .catch(error => {
@@ -101,7 +101,7 @@
                 .then(() => {
                     updateQueueInfo();
                     processedCount = 0;
-                    document.getElementById('remaining').innerText = 488;
+                    document.getElementById('remaining').innerText = 491;
                 })
                 .catch(error => {
                     console.error('Error purging queue:', error);
