@@ -3,6 +3,9 @@ generate_a0_map.py
 generate_hi_res_prayer_maps.py
 generate_prayer_maps_swapped.py
 generate_prayer_maps.py
+create_animated_gif.py
+prayed_for.json
+
 
 /output
 /__pycache__
