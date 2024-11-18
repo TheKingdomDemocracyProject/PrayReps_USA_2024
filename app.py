@@ -33,7 +33,7 @@ queued_entries = set()  # To track the unique entries in the queue
 # Paths for hex map
 hex_map_path = 'data/20241105_usa_esri_v2.shp'
 post_label_mapping_path = 'data/post_label to 3CODE.csv'
-heart_img_path = 'data/heart.png'
+heart_img_path = 'static/heart_icons/heart_red.png'
 
 # Load hex map and mappings
 hex_map = load_hex_map(hex_map_path)
@@ -129,7 +129,7 @@ def home():
     remaining = 488 - len(prayed_for)
     current = None if data_queue.empty() else data_queue.queue[0]
     queue_list = list(data_queue.queue)
-    plot_hex_map_with_hearts(hex_map, post_label_mapping, [item['post_label'] for item in prayed_for], [item['post_label'] for item in queue_list], heart_img_path)  # Update hex map
+    plot_hex_map_with_hearts(hex_map, post_label_mapping, [item['post_label'] for item in prayed_for], [item['post_label'] for item in queue_list])  # Update hex map
 
     # Create URLs for images
     for deputy in deputies_with_images:
@@ -161,7 +161,7 @@ def process_item():
         write_log()  # Save to log file
         logging.info(f"Processed item: {item}")
         queue_list = list(data_queue.queue)
-        plot_hex_map_with_hearts(hex_map, post_label_mapping, [item['post_label'] for item in prayed_for], [item['post_label'] for item in queue_list], heart_img_path)  # Update hex map
+        plot_hex_map_with_hearts(hex_map, post_label_mapping, [item['post_label'] for item in prayed_for], [item['post_label'] for item in queue_list])  # Update hex map
     return '', 204
 
 @app.route('/statistics')
@@ -220,7 +220,7 @@ def purge_queue():
     prayed_for = []
     queued_entries.clear()
     write_log()
-    plot_hex_map_with_hearts(hex_map, post_label_mapping, [], [], heart_img_path)  # Update hex map
+    plot_hex_map_with_hearts(hex_map, post_label_mapping, [], [])  # Update hex map
     return redirect(url_for('home'))
 
 @app.route('/refresh')
@@ -243,7 +243,7 @@ def put_back_in_queue():
         queued_entries.add((person_name, post_label))
         write_log()
         queue_list = list(data_queue.queue)
-        plot_hex_map_with_hearts(hex_map, post_label_mapping, [item['post_label'] for item in prayed_for], [item['post_label'] for item in queue_list], heart_img_path)  # Update hex map
+        plot_hex_map_with_hearts(hex_map, post_label_mapping, [item['post_label'] for item in prayed_for], [item['post_label'] for item in queue_list])  # Update hex map
 
     return redirect(url_for('prayed_list'))
 

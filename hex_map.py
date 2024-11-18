@@ -1,11 +1,13 @@
 import geopandas as gpd
 import pandas as pd
 import matplotlib
-matplotlib.use('Agg')  # Use Agg backend for Matplotlib
+matplotlib.use('Agg')
 import matplotlib.pyplot as plt
 from matplotlib.patches import Polygon
 from matplotlib.offsetbox import AnnotationBbox, OffsetImage
 from PIL import Image, ImageFile
+import random
+import os
 
 # Ensure PIL doesn't use tkinter
 ImageFile.LOAD_TRUNCATED_IMAGES = True
@@ -20,15 +22,21 @@ def load_post_label_mapping(post_label_mapping_path):
     post_label_mapping = pd.read_csv(post_label_mapping_path)
     return post_label_mapping
 
-# Load heart image
-def load_heart_image(heart_img_path):
-    heart_img = Image.open(heart_img_path)
+# Load a random heart PNG image from the directory
+def load_random_heart_image():
+    heart_dir = 'static/heart_icons'
+    heart_pngs = [f for f in os.listdir(heart_dir) if f.endswith('.png')]
+    
+    # Select a random heart PNG file
+    heart_png_path = os.path.join(heart_dir, random.choice(heart_pngs))
+    
+    # Load the image with PIL
+    heart_img = Image.open(heart_png_path).convert("RGBA")
     heart_img.thumbnail((50, 50))  # Resize the image for better fit
     return heart_img
 
 # Plot hex map with white fill color and light grey boundaries
-def plot_hex_map_with_hearts(hex_map, post_label_mapping, prayed_for, queue, heart_img_path):
-    heart_img = load_heart_image(heart_img_path)
+def plot_hex_map_with_hearts(hex_map, post_label_mapping, prayed_for, queue):
     fig, ax = plt.subplots(1, 1, figsize=(25, 25))
     hex_map.plot(ax=ax, color='white', edgecolor='lightgrey')  # Use light grey for edges
     ax.set_axis_off()  # Hide the axis
@@ -53,7 +61,11 @@ def plot_hex_map_with_hearts(hex_map, post_label_mapping, prayed_for, queue, hea
             if not location_geom.empty:
                 centroid = location_geom.geometry.centroid.iloc[0]
                 print(f"Centroid for {location_code}: ({centroid.x}, {centroid.y})")
-                imagebox = OffsetImage(heart_img, zoom=0.9)  # Adjust the zoom level for heart size
+                
+                # Load a random heart image
+                heart_img = load_random_heart_image()
+                
+                imagebox = OffsetImage(heart_img, zoom=0.6)  # Adjust the zoom level for heart size
                 ab = AnnotationBbox(imagebox, (centroid.x, centroid.y), frameon=False)
                 ax.add_artist(ab)
                 print(f"Heart plotted for location {location_code}")
@@ -71,7 +83,7 @@ def plot_hex_map_with_hearts(hex_map, post_label_mapping, prayed_for, queue, hea
             location_geom = hex_map[hex_map['name'] == location_code]
             if not location_geom.empty:
                 centroid = location_geom.geometry.centroid.iloc[0]
-                hex_patch = Polygon(location_geom.geometry.iloc[0].exterior.coords, closed=True, edgecolor='yellow', facecolor='yellow', alpha=0.5)
+                hex_patch = Polygon(location_geom.geometry.iloc[0].exterior.coords, closed=True, edgecolor='black', facecolor='yellow', alpha=0.8)
                 ax.add_patch(hex_patch)
 
     # Save the plot as an image in the static directory
@@ -82,7 +94,6 @@ def plot_hex_map_with_hearts(hex_map, post_label_mapping, prayed_for, queue, hea
 if __name__ == "__main__":
     hex_map_path = 'data/20241105_usa_esri_v2.shp'
     post_label_mapping_path = 'data/post_label to 3CODE.csv'
-    heart_img_path = 'data/heart.png'
     prayed_for = []  # Empty list for Case 2
     queue = ['Croydon West']  # Example list with one item in the queue
 
