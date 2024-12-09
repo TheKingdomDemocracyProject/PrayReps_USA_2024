@@ -48,7 +48,7 @@ logging.basicConfig(level=logging.DEBUG, format='%(asctime)s - %(levelname)s - %
 # Function to fetch the CSV
 def fetch_csv():
     logging.info("Fetching CSV data")
-    url = "https://docs.google.com/spreadsheets/d/e/2PACX-1vRipmW1ZyjBW0Rea2pnK_4v6ZqPqhFX9nI3HnOtpDt2XE6V13FNnXrPTCES_HgQYbzJD4aPvd27No2h/pub?gid=0&single=true&output=csv"
+    url = "data/20241105_usa_488.csv"
     response = requests.get(url)
     data = response.content.decode('utf-8')
     df = pd.read_csv(StringIO(data))
