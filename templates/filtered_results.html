@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Filtered Representatives</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+    <div class="prayedcontent"> <!-- Using prayedcontent for similar styling, can be changed -->
+        <h1>Representatives for {{ location_query if location_query else 'State Search' }}</h1>
+
+        {% with messages = get_flashed_messages(with_categories=true) %}
+          {% if messages %}
+            <div class="flash-messages">
+            {% for category, message in messages %}
+              <div class="flash {{ category }}">{{ message }}</div>
+            {% endfor %}
+            </div>
+          {% endif %}
+        {% endwith %}
+
+        {% if representatives %}
+            <div class="prayed-list"> <!-- Using prayed-list for similar styling -->
+                {% for item in representatives %}
+                <div class="prayed-item"> <!-- Using prayed-item for similar styling -->
+                    <span>
+                        <span class="highlight {{ item.party.lower() if item.party else 'other' }}"
+                              data-party-color="{{ party_info.get(item.party, party_info['Other'])['color'] if item.party else party_info['Other']['color'] }}"
+                              title="{{ item.party if item.party else 'N/A' }}">
+                              {{ item.person_name if item.person_name else 'N/A' }}
+                        </span>
+                        ({{ item.party if item.party else 'N/A' }})
+                        -
+                        {{ item.place if item.place else (item.post_label if item.post_label else 'N/A') }}
+                    </span>
+                    <!-- Add other details or actions if needed -->
+                </div>
+                {% endfor %}
+            </div>
+        {% else %}
+            {% if location_query %}
+                <p>No representatives found for "{{ location_query }}". Please check the state name and try again.</p>
+            {% else %}
+                <!-- This message might show on GET request if no search has been made yet, or if form submitted empty -->
+                <p>Please enter a state name in the form on the main page to see results.</p>
+            {% endif %}
+        {% endif %}
+
+        <div class="links">
+            <a href="{{ url_for('home') }}">Back to Main</a>
+            <a href="{{ url_for('queue_page') }}">View Queue</a>
+            <a href="{{ url_for('prayed_list') }}">View Prayed Constituencies</a>
+            <a href="{{ url_for('statistics') }}">View Statistics</a>
+        </div>
+    </div>
+    <script>
+        // Optional: Add any specific JS for this page if needed in the future
+        // For now, ensuring party colors are applied if highlights are used
+        window.onload = function() {
+            const highlights = document.querySelectorAll('.highlight');
+            highlights.forEach(span => {
+                // By default, show party affiliation color, or set to transparent if desired
+                // For this page, let's assume we always want to show it
+                const color = span.getAttribute('data-party-color');
+                if (color) {
+                    span.style.backgroundColor = color;
+                } else {
+                     span.style.backgroundColor = 'transparent'; // Fallback
+                }
+            });
+        }
+    </script>
+</body>
+</html>

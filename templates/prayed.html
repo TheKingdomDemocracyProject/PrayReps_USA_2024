@@ -7,6 +7,15 @@
 </head>
 <body>
     <div class="prayedcontent">
+        {% with messages = get_flashed_messages(with_categories=true) %}
+          {% if messages %}
+            <div class="flash-messages">
+            {% for category, message in messages %}
+              <div class="flash {{ category }}">{{ message }}</div>
+            {% endfor %}
+            </div>
+          {% endif %}
+        {% endwith %}
         <h1>People and Places We've Prayed For</h1>
         <div class="links">
             <a href="/">Back to Main</a>
@@ -58,20 +67,47 @@
 
         function togglePartyAffiliation() {
             const highlights = document.querySelectorAll('.highlight');
+            let affiliationsVisible = false; // Assume hidden initially
             highlights.forEach(span => {
                 if (span.style.backgroundColor === '' || span.style.backgroundColor === 'transparent') {
                     span.style.backgroundColor = span.getAttribute('data-party-color');
+                    affiliationsVisible = true; // At least one became visible
                 } else {
                     span.style.backgroundColor = 'transparent';
+                    // If any are made transparent, the overall state is hidden, unless another is visible.
+                    // This simple check might need refinement if spans can have mixed states initially.
+                    // For now, if we make one transparent, we assume the goal was to hide.
+                }
+            });
+
+            // Update button text based on the determined state after changes
+            // A more robust way would be to check the state of the *first* element or a specific one.
+            // If any span is colored, we assume "Hide" should be the next action.
+            const buttons = document.querySelectorAll('[onclick="togglePartyAffiliation()"]');
+            let currentAffiliationIsVisible = false;
+            if (highlights.length > 0 && highlights[0].style.backgroundColor !== 'transparent' && highlights[0].style.backgroundColor !== '') {
+                currentAffiliationIsVisible = true;
+            }
+
+            buttons.forEach(button => {
+                if (currentAffiliationIsVisible) {
+                    button.textContent = 'Hide Party Affiliation';
+                } else {
+                    button.textContent = 'Show Party Affiliation';
                 }
             });
         }
 
-        // Initial setting to hide party affiliation
+        // Initial setting to hide party affiliation and set button text
         window.onload = function() {
             const highlights = document.querySelectorAll('.highlight');
             highlights.forEach(span => {
                 span.style.backgroundColor = 'transparent';
+            });
+            // Set initial button text
+            const buttons = document.querySelectorAll('[onclick="togglePartyAffiliation()"]');
+            buttons.forEach(button => {
+                button.textContent = 'Show Party Affiliation';
             });
         }
     </script>

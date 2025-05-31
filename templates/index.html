@@ -29,6 +29,13 @@
         <a href="/queue">View Queue</a>
         <a href="/statistics">View Statistics</a>
     </div>
+    <div class="filter-section">
+        <h3>Find Representatives by State</h3>
+        <form method="POST" action="{{ url_for('filter_by_state') }}">
+            <input type="text" name="state_name" placeholder="Enter State Name (e.g., California)" required>
+            <button type="submit">Search by State</button>
+        </form>
+    </div>
     <script>
         let processedCount = {{ 491 - remaining }};
 
